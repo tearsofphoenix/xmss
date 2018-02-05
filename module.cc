@@ -41,22 +41,57 @@ using namespace v8;
 
 static xmss_params params;
 static uint32_t oid;
+static unsigned char* seedPtr;
+static unsigned long long seedLength = 0;
+
+    static void _genKey(const FunctionCallbackInfo<Value>& args) {
+        Isolate* isolate = args.GetIsolate();
+
+        size_t pkLen = XMSS_OID_LEN + params.pk_bytes;
+        size_t skLen = XMSS_OID_LEN + params.sk_bytes;
+
+        unsigned char pk[pkLen];
+        unsigned char sk[skLen];
+
+        XMSS_KEYPAIR(pk, sk, oid);
+
+        v8::Local<Object> obj = v8::Object::New(isolate);
+        obj->Set(v8::String::NewFromUtf8(isolate, "private"), node::Encode(isolate, (const char*)sk, skLen, node::encoding::BUFFER));
+        obj->Set(v8::String::NewFromUtf8(isolate, "public"), node::Encode(isolate, (const char*)pk, pkLen, node::encoding::BUFFER));
+        args.GetReturnValue().Set(obj);
+    }
+
+    static void _seedFunc(unsigned char *x, unsigned long long xlen) {
+        for (int i = 0; i < xlen; ++i) {
+            x[i] = seedPtr[i % seedLength];
+        }
+    }
 
 void GenKey(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+    if (args[0]->IsUndefined()) {
+        _genKey(args);
+    } else {
+        seedPtr = (unsigned char*)node::Buffer::Data(args[0]);
+        seedLength = node::Buffer::Length(args[0]);
 
-  size_t pkLen = XMSS_OID_LEN + params.pk_bytes;
-  size_t skLen = XMSS_OID_LEN + params.sk_bytes;
+        Isolate* isolate = args.GetIsolate();
 
-  unsigned char pk[pkLen];
-  unsigned char sk[skLen];
+        size_t pkLen = XMSS_OID_LEN + params.pk_bytes;
+        size_t skLen = XMSS_OID_LEN + params.sk_bytes;
 
-  XMSS_KEYPAIR(pk, sk, oid);
+        unsigned char pk[pkLen];
+        unsigned char sk[skLen];
 
-  v8::Local<Object> obj = v8::Object::New(isolate);
-  obj->Set(v8::String::NewFromUtf8(isolate, "private"), node::Encode(isolate, (const char*)sk, skLen, node::encoding::BUFFER));
-  obj->Set(v8::String::NewFromUtf8(isolate, "public"), node::Encode(isolate, (const char*)pk, pkLen, node::encoding::BUFFER));
-  args.GetReturnValue().Set(obj);
+        xmss_keypair_seed(pk, sk, oid, _seedFunc);
+
+        v8::Local<Object> obj = v8::Object::New(isolate);
+        obj->Set(v8::String::NewFromUtf8(isolate, "private"), node::Encode(isolate, (const char*)sk, skLen, node::encoding::BUFFER));
+        obj->Set(v8::String::NewFromUtf8(isolate, "public"), node::Encode(isolate, (const char*)pk, pkLen, node::encoding::BUFFER));
+        args.GetReturnValue().Set(obj);
+
+        seedPtr = NULL;
+        seedLength = 0;
+    }
 }
 
 void signData(const FunctionCallbackInfo<Value>& args) {

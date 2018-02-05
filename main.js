@@ -6,8 +6,8 @@ process.chdir(oldpath);
 
 
 module.exports = {
-    createKeypair: function () {
-        return addon.createKeypair();
+    createKeypair: function (seed) {
+        return addon.createKeypair(seed);
     },
     sign: function (message, privateKey) {
         var abi = addon.sign(message, privateKey);

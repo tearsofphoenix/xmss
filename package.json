@@ -1,6 +1,6 @@
 {
   "name": "xmss",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "xmss",
   "main": "main.js",
   "repository": {
@@ -8,6 +8,7 @@
     "url": "git@github.com:tearsofphoenix/ntrumls.git"
   },
   "scripts": {
+    "preinstall": "./build.sh",
     "install": "(node install.js) || (exit 0)",
     "test": "mocha --reporter spec test/*-spec.js"
   },

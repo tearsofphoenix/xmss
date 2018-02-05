@@ -1,0 +1,3 @@
+[submodule "xmss-reference"]
+	path = xmss-reference
+	url = git@github.com:veritas-shine/xmss-reference.git

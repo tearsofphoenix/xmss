@@ -1,0 +1,29 @@
+{
+  "name": "xmss",
+  "version": "0.0.1",
+  "description": "xmss",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tearsofphoenix/ntrumls.git"
+  },
+  "scripts": {
+    "install": "(node install.js) || (exit 0)",
+    "test": "mocha --reporter spec test/*-spec.js"
+  },
+  "keywords": [
+    "xmss"
+  ],
+  "author": "tearsofphoenix (tearsofphoenix@icloud.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "chai": "^4.1.2",
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "mocha": "^5.0.0"
+  }
+}

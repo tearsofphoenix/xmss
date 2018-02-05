@@ -85,16 +85,15 @@ void verifyData(const FunctionCallbackInfo<Value>& args) {
   unsigned char* sm = (unsigned char*)node::Buffer::Data(args[0]);
 
   size_t msgLen = node::Buffer::Length(args[1]);
-  unsigned char* msg = (unsigned char*)node::Buffer::Data(args[1]);
 
   unsigned char* pk = (unsigned char*)node::Buffer::Data(args[2]);
 
   unsigned long long mlen = msgLen;
   unsigned char *mout = (unsigned char *)malloc(mlen);
 
-  XMSS_SIGN_OPEN(mout, &mlen, sm, smlen, pk);
+  int ret = XMSS_SIGN_OPEN(mout, &mlen, sm, smlen, pk);
 
-  bool ok = (mlen == msgLen) && (memcpy(msg, mout, msgLen) == 0);
+  bool ok = ret == 0;
 
   free(mout);
 

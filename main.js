@@ -14,6 +14,7 @@ module.exports = {
 	    return abi.buffer.slice(0, abi.length);
     },
     verify: function (signature, message, publicKey) {
-        return addon.verify(signature, message, publicKey);
+        var abi = addon.verify(signature, message, publicKey);
+        return abi[0];
     }
 };

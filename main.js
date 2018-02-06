@@ -7,7 +7,11 @@ process.chdir(oldpath);
 
 module.exports = {
     createKeypair: function (seed) {
-        return addon.createKeypair(seed);
+        var abi = addon.createKeypair(seed);
+        return {
+            private: abi.private.slice(0),
+            public: abi.public.slice(0)
+        };
     },
     sign: function (message, privateKey) {
         var abi = addon.sign(message, privateKey);

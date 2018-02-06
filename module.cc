@@ -124,13 +124,12 @@ void verifyData(const FunctionCallbackInfo<Value>& args) {
   unsigned char* pk = (unsigned char*)node::Buffer::Data(args[2]);
 
   unsigned long long mlen = msgLen;
-  unsigned char *mout = (unsigned char *)malloc(mlen);
+  v8::Local<v8::Value> outbuffer = node::Buffer::New(isolate, mlen).ToLocalChecked();
+  unsigned char *mout = (unsigned char*)node::Buffer::Data(outbuffer);
 
   int ret = XMSS_SIGN_OPEN(mout, &mlen, sm, smlen, pk);
 
   bool ok = ret == 0;
-
-  free(mout);
 
   v8::Local<v8::Object> output = v8::Object::New(isolate);
   output->Set(0, v8::Boolean::New(isolate, ok));

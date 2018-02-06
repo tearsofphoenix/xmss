@@ -79,14 +79,17 @@ void GenKey(const FunctionCallbackInfo<Value>& args) {
         size_t pkLen = XMSS_OID_LEN + params.pk_bytes;
         size_t skLen = XMSS_OID_LEN + params.sk_bytes;
 
-        unsigned char pk[pkLen];
-        unsigned char sk[skLen];
+        v8::Local<v8::Value> pkBuffer = node::Buffer::New(isolate, pkLen).ToLocalChecked();
+        v8::Local<v8::Value> skBuffer = node::Buffer::New(isolate, skLen).ToLocalChecked();
+
+        unsigned char *pk = (unsigned char *)node::Buffer::Data(pkBuffer);
+        unsigned char *sk = (unsigned char *)node::Buffer::Data(skBuffer);
 
         xmss_keypair_seed(pk, sk, oid, _seedFunc);
 
         v8::Local<Object> obj = v8::Object::New(isolate);
-        obj->Set(v8::String::NewFromUtf8(isolate, "private"), node::Encode(isolate, (const char*)sk, skLen, node::encoding::BUFFER));
-        obj->Set(v8::String::NewFromUtf8(isolate, "public"), node::Encode(isolate, (const char*)pk, pkLen, node::encoding::BUFFER));
+        obj->Set(v8::String::NewFromUtf8(isolate, "private"), skBuffer);
+        obj->Set(v8::String::NewFromUtf8(isolate, "public"), pkBuffer);
         args.GetReturnValue().Set(obj);
 
         seedPtr = NULL;

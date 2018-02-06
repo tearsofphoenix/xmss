@@ -19,13 +19,13 @@ describe('xmss test', function () {
     });
 
     it('should verify data', function () {
-        this.timeout(200 * 1000);
+        this.timeout(2000 * 1000);
         pair = xmss.createKeypair();
         var msg = new Uint8Array([11, 12, 13, 14, 15, 16, 17, 18, 11, 12, 13, 14, 15, 16, 17, 18,
             11, 12, 13, 14, 15, 16, 17, 18, 11, 12, 13, 14, 15, 16, 17, 18, 11, 12, 13, 14, 15, 16, 17, 18,
             11, 12, 13, 14, 15, 16, 17, 18, 11, 12, 13, 14, 15, 16, 17, 18, 11, 12, 13, 14, 15, 16, 17, 18]);
 
-        for (var i = 0; i < 10; ++i) {
+        for (var i = 0; i < 100; ++i) {
             var sig = xmss.sign(msg, pair.private);
             var ret = xmss.verify(sig, msg, pair.public);
             assert.equal(ret, true);
